@@ -14,18 +14,18 @@ app.locals.polls = [];
 app.locals.pollIndex = 0;
 
 const createNewPoll = (pollData) => {
-
   const pollInfo = {
     urlExt: app.locals.pollIndex,
     data: pollData
   }
   app.locals.polls.push(pollInfo)
   app.locals.pollIndex++
+  return app.locals.pollIndex - 1
 }
 
 app.post('/api/newpoll', (req, res) => {
-  createNewPoll(req.body)
-  res.send(app.locals.polls)
+  let pollID = createNewPoll(req.body)
+  res.send({pollID})
 })
 
 app.use(express.static(path.resolve(__dirname, '..', 'src')));
@@ -34,6 +34,9 @@ app.get('/', (req, res) => {
   res.sendFile(path.resolve(__dirname, '..', 'src', 'index.html'));
 });
 
+app.get(`/poll/*`, (req, res) => {
+  res.sendFile(path.resolve(__dirname, '..', 'src', 'poll.html'));
+})
 
 var port_number = process.env.PORT || 3001
 

@@ -21,7 +21,7 @@ $(document).ready(function() {
         {
           id: 4,
           text: $('#form-poll-option4').val()
-        }       
+        }
       ]
     };
 
@@ -37,7 +37,8 @@ $(document).ready(function() {
     }).then( res =>{
       return res.json();
     }).then( res =>{
-        console.log(res);
+
+      return window.location = `/poll/?poll=${res.pollID}`
     })
 
   });
