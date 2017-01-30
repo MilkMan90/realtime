@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Pollster</title>
+    <script src="//code.jquery.com/jquery-3.1.0.min.js"></script>
+
+    <script src="//cdn.auth0.com/js/lock/10.3.0/lock.min.js"></script>
+
+    <script src="scripts/auth0-variables.js"></script>
+    <script src="scripts/auth.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Validatego</h1>
+      <img alt="avatar" class="avatar" style="display:none;">
+      <p>Welcome <span class="nickname"></span></p>
+      <button type="submit" class="btn-login">Sign In</button>
+      <button type="submit" class="btn-logout" style="display:none;">Sign Out</button>
+    </header>
+
+    <form class="" action="index.html" method="post">
+
+      <label class="form-poll-title" for="option1">
+        Poll Title
+        <input type="text" name="title" id="form-poll-title" value="">
+      </label>
+      <label class="form-poll-option" for="option1">
+        Option 1
+        <input type="text" name="option1" id="form-poll-option1" value="">
+      </label>
+      <label class="form-poll-option" for="option2">
+        Option 2
+        <input type="text" name="option2" id="form-poll-option2" value="">
+      </label>
+      <label class="form-poll-option" for="option3">
+        Option 3
+        <input type="text" name="option3" id="form-poll-option3" value="">
+      </label>
+      <label class="form-poll-option" for="option4">
+        Option 4
+        <input type="text" name="option4" id="form-poll-option4" value="">
+      </label>
+      <button class="submit-new-poll" type="submit" name="submit-button">Create New Poll</button>
+    </form>
+
+    <script src="./scripts/index.js">
+    </script>
+
+  </body>
+</html>
