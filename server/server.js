@@ -23,8 +23,13 @@ const createNewPoll = (pollData) => {
   return app.locals.pollIndex - 1
 }
 
+app.get('/api/poll/:pollid', (req, res) => {
+  console.log(app.locals.polls[req.params.pollid]);
+  res.send(app.locals.polls[req.params.pollid])
+});
+
 app.post('/api/newpoll', (req, res) => {
-  let pollID = createNewPoll(req.body)
+  let pollID = createNewPoll(req.body.pollData)
   res.send({pollID})
 })
 
