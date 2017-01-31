@@ -9,18 +9,22 @@
 
     <script src="scripts/auth0-variables.js"></script>
     <script src="scripts/auth.js"></script>
+    <link rel="stylesheet" href="./styles/index.css">
   </head>
   <body>
     <header>
-      <h1>Validatego</h1>
-      <img alt="avatar" class="avatar" style="display:none;">
-      <p>Welcome <span class="nickname"></span></p>
-      <button type="submit" class="btn-login">Sign In</button>
-      <button type="submit" class="btn-logout" style="display:none;">Sign Out</button>
+      <h1>Clask</h1>
+      <div class="auth">
+        <img alt="avatar" class="avatar" style="display:none;">
+        <p class="username">Welcome <span class="nickname"></span></p>
+        <button type="submit" class="btn-login">Sign In</button>
+        <button type="submit" class="btn-logout" style="display:none;">Sign Out</button>
+      </div>
     </header>
 
-    <form class="" action="index.html" method="post">
+    <form class="new-poll-form" action="index.html" method="post">
 
+      <h2>Create a new Poll</h2>
       <label class="form-poll-title" for="option1">
         Poll Title
         <input type="text" name="title" id="form-poll-title" value="">

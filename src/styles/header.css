@@ -1,0 +1,24 @@
+h1{
+  font-size: 25px;
+  display: inline-block;
+}
+
+header{
+  height: 75px;
+  border-bottom: silver 2px solid;
+}
+
+.auth{
+  display: flex;
+  align-items: center;
+  float: right;
+  height: 75px;
+}
+
+.username{
+  display: inline-block;
+}
+
+.avatar{
+  height: 60px;
+}

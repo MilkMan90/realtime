@@ -1,0 +1,9 @@
+.new-poll-form{
+  margin: 40px;
+  text-align: center;
+}
+
+label{
+  display: block;
+  margin: 20px;
+}
