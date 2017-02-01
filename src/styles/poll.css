@@ -5,6 +5,10 @@
   text-align: center;
 }
 
+.number-of-users{
+  display: inline-block;
+}
+
 .poll-title{
   text-align: center;
   display: block;
@@ -15,7 +19,7 @@
 }
 
 .poll-option{
-  display: inline-block;
+  display: block;
   margin: 20px auto 20px auto;
   width: 100px;
 }

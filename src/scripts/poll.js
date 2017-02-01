@@ -9,7 +9,11 @@ $(document).ready(function() {
     updateVoterImages(res.pollScores)
   });
   getUserProfile()
+  socket.on(`users`, function(res){
+    updateNumberOfUsers(res)
+  })
 })
+
 
 const getParameterByName = (name, url) => {
     if (!url) {
@@ -30,6 +34,9 @@ const getPollData = (pollID) => {
     })
 }
 
+const updateNumberOfUsers = (numberOfUsers) =>{
+  $('.number-of-users').text(`There are ${numberOfUsers} users online`)
+}
 const populatePollData = (pollData, pollID) => {
   $('.poll-title').text(pollData.title)
   pollData.options.forEach((option)=>{
@@ -43,7 +50,6 @@ const populatePollData = (pollData, pollID) => {
 const updateVoterImages = (pollScores) =>{
   pollScores.forEach((userArray, i)=>{
     $(`.option${i}votes`).empty();
-    console.log(userArray);
 
     userArray.forEach((user)=>{
       $(`.option${i}votes`).append(`
@@ -52,6 +58,7 @@ const updateVoterImages = (pollScores) =>{
     })
   })
 }
+
 const populateOptions = (option, pollID) => {
   $('#poll-options').append(`
     <div class=option-container>

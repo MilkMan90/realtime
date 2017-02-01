@@ -59,6 +59,9 @@ io.on('connection', function (socket) {
 
   socket.on('login', function(user){
     //add user to array
+    console.log('A user Connected');
+    console.log(`there are ${Object.keys(io.sockets.connected).length} people connected`);
+    socket.emit('users', Object.keys(io.sockets.connected).length )
     app.locals.users.push(user)
   })
 
