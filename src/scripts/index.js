@@ -7,19 +7,19 @@ $(document).ready(function() {
       title: $('#form-poll-title').val(),
       options: [
         {
-          id: 1,
+          id: 0,
           text: $('#form-poll-option1').val()
         },
         {
-          id: 2,
+          id: 1,
           text: $('#form-poll-option2').val()
         },
         {
-          id: 3,
+          id: 2,
           text: $('#form-poll-option3').val()
         },
         {
-          id: 4,
+          id: 3,
           text: $('#form-poll-option4').val()
         }
       ]
