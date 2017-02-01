@@ -1,8 +1,12 @@
 #poll-container{
-  margin: 100px;
+  margin: 20px;
   border: solid lightGrey 2px;
-  padding: 100px;
+  padding: 50px;
   text-align: center;
+}
+
+.number-of-users{
+  display: inline-block;
 }
 
 .poll-title{
@@ -18,4 +22,14 @@
   display: block;
   margin: 20px auto 20px auto;
   width: 100px;
+}
+
+.option-container{
+  display: block;
+}
+
+.user-img{
+  margin-left: 10px;
+  display: inline-block;
+  width: 30px;
 }

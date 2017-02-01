@@ -1,12 +1,17 @@
-var socket = io();
 var profileInfo;
+var socket = io();
+
 
 $(document).ready(function() {
   let pollID = getParameterByName('poll');
   getPollData(pollID).then((res)=>{
-    populatePollData(res, pollID)
+    populatePollData(res.data, pollID)
+    updateVoterImages(res.pollScores)
   });
   getUserProfile()
+  socket.on(`users`, function(res){
+    updateNumberOfUsers(res)
+  })
 })
 
 
@@ -29,26 +34,51 @@ const getPollData = (pollID) => {
     })
 }
 
+const updateNumberOfUsers = (numberOfUsers) =>{
+  $('.number-of-users').text(`There are ${numberOfUsers} users online`)
+}
 const populatePollData = (pollData, pollID) => {
-  $('.poll-title').text(pollData.data.title)
-  pollData.data.options.forEach((option)=>{
+  $('.poll-title').text(pollData.title)
+  pollData.options.forEach((option)=>{
     return populateOptions(option, pollID)
+  })
+  socket.on(`vote:${pollID}`, function(pollScores){
+    updateVoterImages(pollScores);
+  })
+}
+
+const updateVoterImages = (pollScores) =>{
+  pollScores.forEach((userArray, i)=>{
+    $(`.option${i}votes`).empty();
+
+    userArray.forEach((user)=>{
+      $(`.option${i}votes`).append(`
+        <img class='user-img' src=${user.picture}/>
+        `);
+    })
   })
 }
 
 const populateOptions = (option, pollID) => {
-  $('#poll-options').append(`<button class=option${option.id}>${option.text}</button>`)
+  $('#poll-options').append(`
+    <div class=option-container>
+      <button class=option${option.id}>${option.text}</button>
+      Votes:
+      <div class=option${option.id}votes>
+      </div>
+    </div>
+    `)
   $(`.option${option.id}`).addClass('poll-option')
 
   $(`.option${option.id}`).on('click', function(){
     sendPollToServer(option.id, pollID)
   })
+
 }
 
+
 const sendPollToServer = (optionID, pollID) => {
-  console.log(profileInfo);
-  socket.emit('test', optionID, profileInfo)
-  // socket.emit(`poll${pollID}`, optionID)
+  socket.emit(`vote:${pollID}`, optionID, profileInfo)
 }
 
 const getUserProfile = () => {
@@ -65,7 +95,22 @@ const getUserProfile = () => {
         return alert('There was an error getting the profile: ' + err.message);
       }
       // Display user information
+      socket.emit('login', profile)
+
       profileInfo = profile;
     });
   }
+
+  lock.on("authenticated", function(authResult) {
+    lock.getProfile(authResult.idToken, function(error, profile) {
+      if (error) {
+        // Handle error
+        return;
+      }
+      localStorage.setItem('id_token', authResult.idToken);
+      // Display user information
+      socket.emit('login', profile)
+      console.log(profile);
+    });
+  });
 }
