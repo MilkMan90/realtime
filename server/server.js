@@ -29,6 +29,7 @@ const createNewPoll = (pollData) => {
       []
     ]
   }
+
   app.locals.polls.push(pollInfo)
   app.locals.pollIndex++
 
@@ -36,7 +37,7 @@ const createNewPoll = (pollData) => {
 }
 
 app.get('/api/poll/:pollid', (req, res) => {
-  res.send(app.locals.polls[req.params.pollid].data)
+  res.send(app.locals.polls[req.params.pollid])
 });
 
 app.post('/api/newpoll', (req, res) => {
@@ -83,7 +84,6 @@ const updatePollScores = (optionID, pollUser, pollID) => {
 
   let pollScores = poll.pollScores.map((question)=>{
     return question.filter((user)=>{
-      console.log(user);
       return user.user_id !== pollUser.user_id
     })
   });

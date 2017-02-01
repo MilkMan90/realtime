@@ -5,7 +5,8 @@ var socket = io();
 $(document).ready(function() {
   let pollID = getParameterByName('poll');
   getPollData(pollID).then((res)=>{
-    populatePollData(res, pollID)
+    populatePollData(res.data, pollID)
+    updateVoterImages(res.pollScores)
   });
   getUserProfile()
 })
@@ -35,25 +36,30 @@ const populatePollData = (pollData, pollID) => {
     return populateOptions(option, pollID)
   })
   socket.on(`vote:${pollID}`, function(pollScores){
-    pollScores.forEach((userArray, i)=>{
-      $(`.option${i}votes`).empty();
-      console.log(userArray);
-
-      userArray.forEach((user)=>{
-        $(`.option${i}votes`).append(`
-          <img class='user-img' src=${user.picture}/>
-
-          `);
-      })
-
-    })
+    updateVoterImages(pollScores);
   })
 }
 
+const updateVoterImages = (pollScores) =>{
+  pollScores.forEach((userArray, i)=>{
+    $(`.option${i}votes`).empty();
+    console.log(userArray);
+
+    userArray.forEach((user)=>{
+      $(`.option${i}votes`).append(`
+        <img class='user-img' src=${user.picture}/>
+        `);
+    })
+  })
+}
 const populateOptions = (option, pollID) => {
   $('#poll-options').append(`
-    <button class=option${option.id}>${option.text}</button>
-    <div class=option${option.id}votes>Votes: </div>
+    <div class=option-container>
+      <button class=option${option.id}>${option.text}</button>
+      Votes:
+      <div class=option${option.id}votes>
+      </div>
+    </div>
     `)
   $(`.option${option.id}`).addClass('poll-option')
 
@@ -82,6 +88,8 @@ const getUserProfile = () => {
         return alert('There was an error getting the profile: ' + err.message);
       }
       // Display user information
+      socket.emit('login', profile)
+
       profileInfo = profile;
     });
   }

@@ -15,11 +15,17 @@
 }
 
 .poll-option{
-  display: block;
+  display: inline-block;
   margin: 20px auto 20px auto;
   width: 100px;
 }
 
+.option-container{
+  display: block;
+}
+
 .user-img{
+  margin-left: 10px;
+  display: inline-block;
   width: 30px;
 }
