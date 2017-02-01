@@ -1,0 +1,21 @@
+#poll-container{
+  margin: 100px;
+  border: solid lightGrey 2px;
+  padding: 100px;
+  text-align: center;
+}
+
+.poll-title{
+  text-align: center;
+  display: block;
+}
+
+#poll-options{
+  text-align: center;
+}
+
+.poll-option{
+  display: block;
+  margin: 20px auto 20px auto;
+  width: 100px;
+}

@@ -3,6 +3,10 @@ var app = express();
 var bodyParser = require('body-parser');
 const path = require('path');
 const md5 = require('md5');
+const http = require('http').Server(app);
+
+const io = require('socket.io')(http);
+
 const environment = process.env.NODE_ENV || 'development';
 // const configuration = require('../knexfile')[environment];
 // const database = require('knex')(configuration);
@@ -43,9 +47,19 @@ app.get(`/poll/*`, (req, res) => {
   res.sendFile(path.resolve(__dirname, '..', 'src', 'poll.html'));
 })
 
+
+io.on('connection', function (socket) {
+
+  console.log('Someone has connected.');
+
+  socket.on('test', function(optionID, user){
+    console.log(optionID, user);
+  })
+})
+
 var port_number = process.env.PORT || 3001
 
-app.listen(port_number, function () {
+http.listen(port_number, function () {
   console.log('RrrarrrrRrrrr server alive on port 3001')
 });
 

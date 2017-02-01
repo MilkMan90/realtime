@@ -1,9 +1,12 @@
-$(document).ready(function() {
+var socket = io();
+var profileInfo;
 
+$(document).ready(function() {
   let pollID = getParameterByName('poll');
   getPollData(pollID).then((res)=>{
-    populatePollData(res)
+    populatePollData(res, pollID)
   });
+  getUserProfile()
 })
 
 
@@ -26,14 +29,43 @@ const getPollData = (pollID) => {
     })
 }
 
-const populatePollData = (pollData) => {
-  console.log(pollData);
+const populatePollData = (pollData, pollID) => {
   $('.poll-title').text(pollData.data.title)
   pollData.data.options.forEach((option)=>{
-    return populateOptions(option)
+    return populateOptions(option, pollID)
   })
 }
 
-const populateOptions = (option) => {
-  $('#poll-container').append(`<button class=option${option.id}>${option.text}</button>`)
+const populateOptions = (option, pollID) => {
+  $('#poll-options').append(`<button class=option${option.id}>${option.text}</button>`)
+  $(`.option${option.id}`).addClass('poll-option')
+
+  $(`.option${option.id}`).on('click', function(){
+    sendPollToServer(option.id, pollID)
+  })
+}
+
+const sendPollToServer = (optionID, pollID) => {
+  console.log(profileInfo);
+  socket.emit('test', optionID, profileInfo)
+  // socket.emit(`poll${pollID}`, optionID)
+}
+
+const getUserProfile = () => {
+  var lock = new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_DOMAIN, {
+    auth: {
+      params: { scope: 'openid email' } //Details: https://auth0.com/docs/scopes
+    }
+  });
+
+  var id_token = localStorage.getItem('id_token');
+  if (id_token) {
+    lock.getProfile(id_token, function (err, profile) {
+      if (err) {
+        return alert('There was an error getting the profile: ' + err.message);
+      }
+      // Display user information
+      profileInfo = profile;
+    });
+  }
 }
