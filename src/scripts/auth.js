@@ -1,3 +1,4 @@
+var profileInfo;
 
 $(document).ready(function() {
 
@@ -39,6 +40,7 @@ $(document).ready(function() {
         }
         // Display user information
         show_profile_info(profile);
+        profileInfo = profile;
       });
     }
   };
