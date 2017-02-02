@@ -19,21 +19,23 @@ app.locals.users = [];
 app.locals.pollIndex = 0;
 
 const createNewPoll = (pollData) => {
+
   const pollInfo = {
     urlExt: app.locals.pollIndex,
     data: pollData,
-    pollScores: [
-      [],
-      [],
-      [],
-      []
-    ]
+    pollScores: initializePollScoreArrays(pollData)
   }
 
   app.locals.polls.push(pollInfo)
   app.locals.pollIndex++
 
   return app.locals.pollIndex - 1
+}
+
+const initializePollScoreArrays = (pollData) => {
+  return pollData.options.map(()=>{
+    return []
+  })
 }
 
 app.get('/api/poll/:pollid', (req, res) => {

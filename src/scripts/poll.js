@@ -11,7 +11,7 @@ $(document).ready(function() {
     populatePollData(res.data, pollID)
     updateVoterImages(res.pollScores)
   });
-  
+
   socket.on(`users`, function(res){
     updateNumberOfUsers(res)
   })
@@ -58,7 +58,6 @@ const populateOptions = (option, pollID) => {
   $('#poll-options').append(`
     <div class=option-container>
       <button class=option${option.id}>${option.text}</button>
-      Votes:
       <div class=option${option.id}votes>
       </div>
     </div>
