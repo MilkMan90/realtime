@@ -3,13 +3,14 @@ var socket = io();
 
 
 $(document).ready(function() {
+  getUserProfile()
+
   let pollID = getParameterByName('poll');
   getPollData(pollID).then((res)=>{
     populatePollData(res.data, pollID)
     updateVoterImages(res.pollScores)
   });
 
-  getUserProfile()
   socket.on(`users`, function(res){
     updateNumberOfUsers(res)
   })
@@ -34,6 +35,10 @@ const populatePollData = (pollData, pollID) => {
   socket.on(`vote:${pollID}`, function(pollScores){
     updateVoterImages(pollScores);
   })
+  if(!profileInfo){
+    console.log('hiding poll container');
+    $('#poll-container').hide()
+  }
 }
 
 const updateVoterImages = (pollScores) =>{
@@ -66,7 +71,6 @@ const populateOptions = (option, pollID) => {
 
 }
 
-
 const sendPollToServer = (optionID, pollID) => {
   socket.emit(`vote:${pollID}`, optionID, profileInfo)
 }
@@ -88,6 +92,8 @@ const getUserProfile = () => {
       socket.emit('login', profile)
 
       profileInfo = profile;
+      $('#poll-container').show()
+
     });
   }
 
@@ -100,6 +106,8 @@ const getUserProfile = () => {
       localStorage.setItem('id_token', authResult.idToken);
       // Display user information
       socket.emit('login', profile)
+      profileInfo = profile;
+      $('#poll-container').show()
     });
   });
 }

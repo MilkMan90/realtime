@@ -63,6 +63,7 @@ $(document).ready(function() {
   var logout = function() {
     localStorage.removeItem('id_token');
     clear_profile_info();
+    $('#poll-container').hide()
     socket.emit('logout', profileInfo )
   };
 
