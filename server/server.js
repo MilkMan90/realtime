@@ -18,18 +18,15 @@ app.locals.polls = [];
 app.locals.users = [];
 app.locals.pollIndex = 0;
 
-const createNewPoll = (pollData) => {
-
-  const pollInfo = {
-    urlExt: app.locals.pollIndex,
+const getCurrentPollIndex = () =>{
+  return app.locals.pollIndex
+}
+const createNewPollObject = (pollData) => {
+  return {
+    urlExt: getCurrentPollIndex(),
     data: pollData,
     pollScores: initializePollScoreArrays(pollData)
   }
-
-  app.locals.polls.push(pollInfo)
-  app.locals.pollIndex++
-
-  return app.locals.pollIndex - 1
 }
 
 const initializePollScoreArrays = (pollData) => {
@@ -38,12 +35,23 @@ const initializePollScoreArrays = (pollData) => {
   })
 }
 
+const addPollToDatabase = (pollData) => {
+  let pollIndex = app.locals.pollIndex
+  app.locals.polls.push(createNewPollObject(pollData))
+  app.locals.pollIndex++
+  return pollIndex;
+}
+
+const getPollsFromDatabase = () => {
+  return app.locals.polls;
+}
+
 app.get('/api/poll/:pollid', (req, res) => {
-  res.send(app.locals.polls[req.params.pollid])
+  res.send(getSinglePollFromDatabase(req.params.pollid))
 });
 
 app.post('/api/newpoll', (req, res) => {
-  let pollID = createNewPoll(req.body.pollData)
+  let pollID = addPollToDatabase(req.body.pollData)
   res.send({pollID})
 })
 
@@ -57,34 +65,47 @@ app.get(`/poll/*`, (req, res) => {
   res.sendFile(path.resolve(__dirname, '..', 'src', 'poll.html'));
 })
 
+const addUserToDatabase = (user) => {
+  app.locals.users.push(user)
+}
+
+const removeUserFromDatabase = (user) => {
+  app.locals.users = app.locals.users.filter((item)=>{
+    return item.user_id !== user.user_id
+  })
+}
+
 io.on('connection', function (socket) {
 
   socket.on('login', function(user){
     //add user to array
     console.log('A user Connected');
-    console.log(`there are ${Object.keys(io.sockets.connected).length} people connected`);
     socket.emit('users', Object.keys(io.sockets.connected).length )
-    app.locals.users.push(user)
+    addUserToDatabase(user)
   })
 
-  app.locals.polls.forEach( function(poll){
+  getPollsFromDatabase().forEach( function(poll){
     socket.on(`vote:${poll.urlExt}`, function(optionID, user){
-      //update poll scores for each user
       updatePollScores(optionID, user, poll.urlExt)
       updateClientScores(socket, poll.urlExt)
     })
   });
 
   socket.on('logout', function(user){
-    //add user to array
-    app.locals.users = app.locals.users.filter((item)=>{
-      return item.user_id !== user.user_id
-    })
+    removeUserFromDatabase(user);
   })
 })
 
+const getSinglePollFromDatabase = (pollID) => {
+  return app.locals.polls[pollID]
+}
+
+const updateSinglePollInDatabase = (pollID, poll) => {
+  app.locals.polls[pollID] = poll;
+}
+
 const updatePollScores = (optionID, pollUser, pollID) => {
-  let poll = app.locals.polls[pollID]
+  let poll = getSinglePollFromDatabase(pollID);
 
   let pollScores = poll.pollScores.map((question)=>{
     return question.filter((user)=>{
@@ -95,7 +116,7 @@ const updatePollScores = (optionID, pollUser, pollID) => {
   pollScores[optionID].push(pollUser)
 
   poll.pollScores = pollScores;
-  app.locals.polls[pollID] = poll;
+  updateSinglePollInDatabase(pollID, poll)
 }
 
 const updateClientScores = (socket, pollID) => {
