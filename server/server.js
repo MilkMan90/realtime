@@ -98,7 +98,8 @@ const updatePollScores = (optionID, pollUser, pollID) => {
 }
 
 const updateClientScores = (socket, pollID) => {
-  socket.emit(`vote:${pollID}`, app.locals.polls[pollID].pollScores)
+  // socket.emit(`vote:${pollID}`, app.locals.polls[pollID].pollScores)
+  io.sockets.emit(`vote:${pollID}`, app.locals.polls[pollID].pollScores)
 }
 
 var port_number = process.env.PORT || 3001
