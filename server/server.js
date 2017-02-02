@@ -66,7 +66,6 @@ io.on('connection', function (socket) {
   })
 
   app.locals.polls.forEach( function(poll){
-
     socket.on(`vote:${poll.urlExt}`, function(optionID, user){
       //update poll scores for each user
       updatePollScores(optionID, user, poll.urlExt)
@@ -98,7 +97,6 @@ const updatePollScores = (optionID, pollUser, pollID) => {
 }
 
 const updateClientScores = (socket, pollID) => {
-  // socket.emit(`vote:${pollID}`, app.locals.polls[pollID].pollScores)
   io.sockets.emit(`vote:${pollID}`, app.locals.polls[pollID].pollScores)
 }
 

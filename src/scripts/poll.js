@@ -6,11 +6,12 @@ $(document).ready(function() {
   getUserProfile()
 
   let pollID = getParameterByName('poll');
+
   getPollData(pollID).then((res)=>{
     populatePollData(res.data, pollID)
     updateVoterImages(res.pollScores)
   });
-
+  
   socket.on(`users`, function(res){
     updateNumberOfUsers(res)
   })
