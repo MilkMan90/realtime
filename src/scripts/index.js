@@ -37,7 +37,6 @@ $(document).ready(function() {
     }).then( res =>{
       return res.json();
     }).then( res =>{
-
       return window.location = `/poll/?poll=${res.pollID}`
     })
 

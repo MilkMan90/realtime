@@ -1,11 +1,26 @@
+/*font-family: 'Roboto', sans-serif;
+font-family: 'Open Sans', sans-serif;
+font-family: 'Lato', sans-serif;*/
+
 h1{
   font-size: 25px;
   display: inline-block;
+  margin: 25px;
+  color: #16a085;
+}
+
+.me{
+  color: #f39c12;
+}
+
+body{
+  font-family: 'Roboto', sans-serif;
 }
 
 header{
   height: 75px;
-  border-bottom: silver 2px solid;
+  background-color: azure;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
 }
 
 .auth{

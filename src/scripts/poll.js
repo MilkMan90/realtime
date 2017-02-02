@@ -58,6 +58,7 @@ const populateOptions = (option, pollID) => {
     </div>
     `)
   $(`.option${option.id}`).addClass('poll-option')
+  $(`.option${option.id}votes`).addClass('vote-container')
 
   $(`.option${option.id}`).on('click', function(){
     sendPollToServer(option.id, pollID)
