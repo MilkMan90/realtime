@@ -6,6 +6,7 @@ const md5 = require('md5');
 const http = require('http').Server(app);
 
 const io = require('socket.io')(http);
+const db = require('./db.js');
 
 const environment = process.env.NODE_ENV || 'development';
 // const configuration = require('../knexfile')[environment];
@@ -18,40 +19,43 @@ app.locals.polls = [];
 app.locals.users = [];
 app.locals.pollIndex = 0;
 
-const getCurrentPollIndex = () =>{
-  return app.locals.pollIndex
-}
-const createNewPollObject = (pollData) => {
-  return {
-    urlExt: getCurrentPollIndex(),
-    data: pollData,
-    pollScores: initializePollScoreArrays(pollData)
-  }
-}
+var database = new db(app);
 
-const initializePollScoreArrays = (pollData) => {
-  return pollData.options.map(()=>{
-    return []
-  })
-}
+// const getCurrentPollIndex = () =>{
+//   return app.locals.pollIndex
+// }
 
-const addPollToDatabase = (pollData) => {
-  let pollIndex = app.locals.pollIndex
-  app.locals.polls.push(createNewPollObject(pollData))
-  app.locals.pollIndex++
-  return pollIndex;
-}
+// const createNewPollObject = (pollData) => {
+//   return {
+//     urlExt: database.getCurrentPollIndex(),
+//     data: pollData,
+//     pollScores: initializePollScoreArrays(pollData)
+//   }
+// }
+//
+// const initializePollScoreArrays = (pollData) => {
+//   return pollData.options.map(()=>{
+//     return []
+//   })
+// }
 
-const getPollsFromDatabase = () => {
-  return app.locals.polls;
-}
+// const addPollToDatabase = (pollData) => {
+//   let pollIndex = app.locals.pollIndex
+//   app.locals.polls.push(createNewPollObject(pollData))
+//   app.locals.pollIndex++
+//   return pollIndex;
+// }
+
+// const getPollsFromDatabase = () => {
+//   return app.locals.polls;
+// }
 
 app.get('/api/poll/:pollid', (req, res) => {
-  res.send(getSinglePollFromDatabase(req.params.pollid))
+  res.send(database.getSinglePollFromDatabase(req.params.pollid))
 });
 
 app.post('/api/newpoll', (req, res) => {
-  let pollID = addPollToDatabase(req.body.pollData)
+  let pollID = database.addPollToDatabase(req.body.pollData)
   res.send({pollID})
 })
 
@@ -65,15 +69,15 @@ app.get(`/poll/*`, (req, res) => {
   res.sendFile(path.resolve(__dirname, '..', 'src', 'poll.html'));
 })
 
-const addUserToDatabase = (user) => {
-  app.locals.users.push(user)
-}
+// const addUserToDatabase = (user) => {
+//   app.locals.users.push(user)
+// }
 
-const removeUserFromDatabase = (user) => {
-  app.locals.users = app.locals.users.filter((item)=>{
-    return item.user_id !== user.user_id
-  })
-}
+// const removeUserFromDatabase = (user) => {
+//   app.locals.users = app.locals.users.filter((item)=>{
+//     return item.user_id !== user.user_id
+//   })
+// }
 
 io.on('connection', function (socket) {
 
@@ -81,10 +85,10 @@ io.on('connection', function (socket) {
     //add user to array
     console.log('A user Connected');
     socket.emit('users', Object.keys(io.sockets.connected).length )
-    addUserToDatabase(user)
+    database.addUserToDatabase(user)
   })
 
-  getPollsFromDatabase().forEach( function(poll){
+  database.getPollsFromDatabase().forEach( function(poll){
     socket.on(`vote:${poll.urlExt}`, function(optionID, user){
       updatePollScores(optionID, user, poll.urlExt)
       updateClientScores(socket, poll.urlExt)
@@ -92,20 +96,20 @@ io.on('connection', function (socket) {
   });
 
   socket.on('logout', function(user){
-    removeUserFromDatabase(user);
+    database.removeUserFromDatabase(user);
   })
 })
 
-const getSinglePollFromDatabase = (pollID) => {
-  return app.locals.polls[pollID]
-}
+// const getSinglePollFromDatabase = (pollID) => {
+//   return app.locals.polls[pollID]
+// }
 
-const updateSinglePollInDatabase = (pollID, poll) => {
-  app.locals.polls[pollID] = poll;
-}
+// const updateSinglePollInDatabase = (pollID, poll) => {
+//   app.locals.polls[pollID] = poll;
+// }
 
 const updatePollScores = (optionID, pollUser, pollID) => {
-  let poll = getSinglePollFromDatabase(pollID);
+  let poll = database.getSinglePollFromDatabase(pollID);
 
   let pollScores = poll.pollScores.map((question)=>{
     return question.filter((user)=>{
@@ -116,7 +120,7 @@ const updatePollScores = (optionID, pollUser, pollID) => {
   pollScores[optionID].push(pollUser)
 
   poll.pollScores = pollScores;
-  updateSinglePollInDatabase(pollID, poll)
+  database.updateSinglePollInDatabase(pollID, poll)
 }
 
 const updateClientScores = (socket, pollID) => {
