@@ -2,18 +2,19 @@ var socket = io();
 
 
 $(document).ready(function() {
-
-  let pollID = getParameterByName('poll');
-
-  getPollData(pollID).then((res)=>{
-    populatePollData(res.data, pollID)
-    updateVoterImages(res.pollScores)
-  });
-
+  renderPoll();
   socket.on(`users`, function(res){
     updateNumberOfUsers(res)
   })
 })
+
+const renderPoll = () =>{
+  let pollID = getParameterByName('poll');
+  getPollData(pollID).then((res)=>{
+    populatePollData(res.data, pollID)
+    updateVoterImages(res.pollScores)
+  });
+}
 
 const getPollData = (pollID) => {
   return fetch(`/api/poll/${pollID}`)
@@ -43,7 +44,6 @@ const populatePollData = (pollData, pollID) => {
 const updateVoterImages = (pollScores) =>{
   pollScores.forEach((userArray, i)=>{
     $(`.option${i}votes`).empty();
-
     userArray.forEach((user)=>{
       $(`.option${i}votes`).append(`
         <img class='user-img' src=${user.picture}/>
@@ -53,20 +53,22 @@ const updateVoterImages = (pollScores) =>{
 }
 
 const populateOptions = (option, pollID) => {
-  $('#poll-options').append(`
+  $('#poll-options').append(generateOptionHTML(option))
+  $(`.option${option.id}`).addClass('poll-option')
+  $(`.option${option.id}votes`).addClass('vote-container')
+  $(`.option${option.id}`).on('click', function(){
+    sendPollToServer(option.id, pollID)
+  })
+}
+
+const generateOptionHTML = (option) => {
+  return (`
     <div class=option-container>
       <button class=option${option.id}>${option.text}</button>
       <div class=option${option.id}votes>
       </div>
     </div>
     `)
-  $(`.option${option.id}`).addClass('poll-option')
-  $(`.option${option.id}votes`).addClass('vote-container')
-
-  $(`.option${option.id}`).on('click', function(){
-    sendPollToServer(option.id, pollID)
-  })
-
 }
 
 const sendPollToServer = (optionID, pollID) => {
