@@ -25,6 +25,7 @@ database.prototype.getSinglePollFromDatabase = function(pollID) {
 }
 
 database.prototype.initializePollScoreArrays = function(pollData) {
+  console.log(pollData.options);
   return pollData.options.map(()=>{
     return []
   })
