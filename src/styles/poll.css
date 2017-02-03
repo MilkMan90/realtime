@@ -33,14 +33,13 @@
 
 .poll-option{
   border: none;
-  width: 70px;
-  height: 25px;
+  width: 130px;
+  height: 40px;
   border-radius: 5px;
   background-color: #1abc9c;
   color: white;
   display: block;
   margin: 20px auto 20px auto;
-  width: 100px;
 }
 
 .poll-option:hover{
