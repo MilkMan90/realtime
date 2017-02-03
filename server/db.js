@@ -1,10 +1,9 @@
 function database(app){
  this.app = app;
+ this.app.locals.polls = [];
+ this.app.locals.users = [];
+ this.app.locals.pollIndex = 0;
 }
-
-// const getCurrentPollIndex = () =>{
-//   return this.app.locals.pollIndex
-// }
 
 database.prototype.getCurrentPollIndex = function() {
   return this.app.locals.pollIndex

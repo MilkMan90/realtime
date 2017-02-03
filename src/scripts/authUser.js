@@ -48,7 +48,6 @@ $(document).ready(function() {
   };
 
   var show_profile_info = function(profile) {
-    console.log(profile);
      $('.nickname').text(profile.name);
      $('.btn-login').hide();
      $('.avatar').attr('src', profile.picture).show();
@@ -65,6 +64,7 @@ $(document).ready(function() {
     localStorage.removeItem('id_token');
     clear_profile_info();
     $('#poll-container').hide()
+    $('.nickname').text('')
     socket.emit('logout', profileInfo )
   };
 
