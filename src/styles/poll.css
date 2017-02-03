@@ -1,13 +1,16 @@
+
+
 #poll-container{
-  margin: 20px;
+  margin: 20px auto 20px auto;
   border: solid lightGrey 1px;
-  padding: 50px;
-  height: 250px;
+  padding: 25px;
+  height: 300px;
   text-align: center;
   -webkit-box-shadow: 0 10px 6px -6px #777;
   -moz-box-shadow: 0 10px 6px -6px #777;
   box-shadow: 0 10px 6px -6px #777;
   border-radius: 5px;
+  width: 75%;
 }
 
 .number-of-users{
@@ -15,6 +18,9 @@
 }
 
 .poll-title{
+  color: black;
+  font-size: 25px;
+  margin: 10px;
   text-align: center;
   display: block;
 }
@@ -54,8 +60,9 @@
 }
 
 .user-img{
+  border-radius: 35px;
   margin-left: 10px;
   display: inline-block;
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
 }

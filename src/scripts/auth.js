@@ -46,7 +46,7 @@ $(document).ready(function() {
   };
 
   var show_profile_info = function(profile) {
-     $('.nickname').text(profile.nickname);
+     $('.nickname').text(profile.name);
      $('.btn-login').hide();
      $('.avatar').attr('src', profile.picture).show();
      $('.btn-logout').show();

@@ -6,6 +6,7 @@ const md5 = require('md5');
 const http = require('http').Server(app);
 
 const io = require('socket.io')(http);
+const db = require('./db.js');
 
 const environment = process.env.NODE_ENV || 'development';
 // const configuration = require('../knexfile')[environment];
@@ -14,34 +15,14 @@ const environment = process.env.NODE_ENV || 'development';
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.locals.polls = [];
-app.locals.users = [];
-app.locals.pollIndex = 0;
-
-const createNewPoll = (pollData) => {
-  const pollInfo = {
-    urlExt: app.locals.pollIndex,
-    data: pollData,
-    pollScores: [
-      [],
-      [],
-      [],
-      []
-    ]
-  }
-
-  app.locals.polls.push(pollInfo)
-  app.locals.pollIndex++
-
-  return app.locals.pollIndex - 1
-}
+const database = new db(app);
 
 app.get('/api/poll/:pollid', (req, res) => {
-  res.send(app.locals.polls[req.params.pollid])
+  res.send(database.getSinglePollFromDatabase(req.params.pollid))
 });
 
 app.post('/api/newpoll', (req, res) => {
-  let pollID = createNewPoll(req.body.pollData)
+  let pollID = database.addPollToDatabase(req.body.pollData)
   res.send({pollID})
 })
 
@@ -56,34 +37,26 @@ app.get(`/poll/*`, (req, res) => {
 })
 
 io.on('connection', function (socket) {
-
   socket.on('login', function(user){
-    //add user to array
-    console.log('A user Connected');
-    console.log(`there are ${Object.keys(io.sockets.connected).length} people connected`);
     socket.emit('users', Object.keys(io.sockets.connected).length )
-    app.locals.users.push(user)
+    database.addUserToDatabase(user)
   })
 
-  app.locals.polls.forEach( function(poll){
-
+  database.getPollsFromDatabase().forEach( function(poll){
     socket.on(`vote:${poll.urlExt}`, function(optionID, user){
-      //update poll scores for each user
       updatePollScores(optionID, user, poll.urlExt)
       updateClientScores(socket, poll.urlExt)
     })
   });
 
   socket.on('logout', function(user){
-    //add user to array
-    app.locals.users = app.locals.users.filter((item)=>{
-      return item.user_id !== user.user_id
-    })
+    database.removeUserFromDatabase(user);
   })
 })
 
+
 const updatePollScores = (optionID, pollUser, pollID) => {
-  let poll = app.locals.polls[pollID]
+  let poll = database.getSinglePollFromDatabase(pollID);
 
   let pollScores = poll.pollScores.map((question)=>{
     return question.filter((user)=>{
@@ -94,11 +67,10 @@ const updatePollScores = (optionID, pollUser, pollID) => {
   pollScores[optionID].push(pollUser)
 
   poll.pollScores = pollScores;
-  app.locals.polls[pollID] = poll;
+  database.updateSinglePollInDatabase( pollID, poll )
 }
 
 const updateClientScores = (socket, pollID) => {
-  // socket.emit(`vote:${pollID}`, app.locals.polls[pollID].pollScores)
   io.sockets.emit(`vote:${pollID}`, app.locals.polls[pollID].pollScores)
 }
 
