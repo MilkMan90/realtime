@@ -12,7 +12,7 @@ $(document).ready(function() {
   if (id_token) {
     lock.getProfile(id_token, function (err, profile) {
       if (err) {
-        return alert('There was an error getting the profile: ' + err.message);
+        return console.log('There was an error getting the profile: ' + err.message);
       }
       // Display user information
       socket.emit('login', profile)
