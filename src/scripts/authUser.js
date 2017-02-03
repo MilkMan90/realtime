@@ -8,6 +8,21 @@ $(document).ready(function() {
     }
   });
 
+  var id_token = localStorage.getItem('id_token');
+  if (id_token) {
+    lock.getProfile(id_token, function (err, profile) {
+      if (err) {
+        return alert('There was an error getting the profile: ' + err.message);
+      }
+      // Display user information
+      socket.emit('login', profile)
+
+      profileInfo = profile;
+      $('#poll-container').show()
+
+    });
+  }
+
   $('.btn-login').click(function(e) {
     e.preventDefault();
     lock.show();
@@ -28,7 +43,8 @@ $(document).ready(function() {
       // Display user information
       show_profile_info(profile);
       profileInfo = profile;
-
+      socket.emit('login', profile)
+      $('#poll-container').show()
     });
   });
 
