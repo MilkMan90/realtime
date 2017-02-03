@@ -22,7 +22,7 @@ app.get('/api/poll/:pollid', (req, res) => {
 });
 
 app.post('/api/newpoll', (req, res) => {
-  let pollID = database.addPollToDatabase(req.body.pollData)
+  let pollID = database.addPollToDatabase(req.body)
   res.send({pollID})
 })
 
